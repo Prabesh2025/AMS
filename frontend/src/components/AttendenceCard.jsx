@@ -11,7 +11,7 @@ export default function AttendenceCard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/create-attendence",
+        "https://ams-a80r.onrender.com/create-attendence",
         {
           fullname: fullName,
           time: time,
@@ -34,7 +34,7 @@ export default function AttendenceCard() {
   const fetchAllAttendance = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/get-all-attendence"
+        "https://ams-a80r.onrender.com/get-all-attendence"
       );
       console.log(response.data.data);
       setAttendances(response.data.data);
@@ -53,7 +53,7 @@ export default function AttendenceCard() {
 
   const deleteAttendance = async (_id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/delete-attendence/${_id}`)
+      const response = await axios.delete(`https://ams-a80r.onrender.com/delete-attendence/${_id}`)
       toast.success("Deleted Successfully")
       fetchAllAttendance();
     } catch (error) {
@@ -119,7 +119,7 @@ export default function AttendenceCard() {
 
             </div>
 
-            <p className="mr-2 "><button onClick={()=>deleteAttendance(eachAttendance._id)} className="text-white bg-red-500 px-2 py-1 text-sm font-medium cursor-pointer">Delete</button></p>
+            <p className="mr-2 "><button onClick={()=>deleteAttendance(eachAttendance._id)} className="text-white bg-red-500 px-2 py-1 text-sm font-medium cursor-pointer rounded-sm">Delete</button></p>
 
           </div>
           
