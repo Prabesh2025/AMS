@@ -28,7 +28,6 @@ export default function AttendenceCard() {
     }
   };
 
-  //Fetch all attendance
   const [attendances, setAttendances] = useState(null);
 
   const fetchAllAttendance = async () => {
@@ -36,9 +35,7 @@ export default function AttendenceCard() {
       const response = await axios.get(
         "https://ams-a80r.onrender.com/get-all-attendence"
       );
-      console.log(response.data.data);
       setAttendances(response.data.data);
-      // toast.success("Attendance fetch successfully");
     } catch (error) {
       console.log("Something went wrong", error);
       toast.error("Unable to fetch all attendance");
@@ -49,84 +46,104 @@ export default function AttendenceCard() {
     fetchAllAttendance();
   }, []);
 
-  //Delete Attendance
-
   const deleteAttendance = async (_id) => {
     try {
-      const response = await axios.delete(`https://ams-a80r.onrender.com/delete-attendence/${_id}`)
-      toast.success("Deleted Successfully")
+      await axios.delete(
+        `https://ams-a80r.onrender.com/delete-attendence/${_id}`
+      );
+      toast.success("Deleted Successfully");
       fetchAllAttendance();
     } catch (error) {
       console.log("Something went wrong", error);
-      toast.error("Delete Failed")
+      toast.error("Delete Failed");
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 py-20 px-4 mt-24">
       {/* Attendance Create Form */}
       <form
         onSubmit={createattendance}
-        className="mt-40 w-4/12 mx-auto border border-gray-200 p-8 space-y-3 shadow-lg"
+        className="max-w-md mx-auto bg-white rounded-xl shadow-md p-8 space-y-6"
       >
-        <div className="flex flex-col">
-          <label htmlFor="fullName">Full Name</label>
+        <h2 className="text-2xl font-semibold text-center text-gray-700">
+          Create Attendance
+        </h2>
+
+        <div>
+          <label
+            htmlFor="fullName"
+            className="block text-sm font-medium text-gray-600 mb-1"
+          >
+            Full Name
+          </label>
           <input
             required
             value={fullName}
             onChange={(event) => setFullName(event.target.value)}
             type="text"
             id="fullName"
-            placeholder="Enter your full name"
-            className="border border-gray-200 outline-none px-2 py-0.5"
+            placeholder="Enter full name"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
           />
         </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="time">Time</label>
+        <div>
+          <label
+            htmlFor="time"
+            className="block text-sm font-medium text-gray-600 mb-1"
+          >
+            Entry Time
+          </label>
           <input
             required
             value={time}
             onChange={(event) => setTime(event.target.value)}
             type="text"
             id="time"
-            placeholder="Enter your entry time"
-            className="border border-gray-200 outline-none px-2 py-0.5"
+            placeholder="Enter entry time"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="text-right">
           <button
             type="submit"
-            className="bg-violet-500 px-6 py-1.5 rounded-md text-white"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-md font-medium transition"
           >
-            Create Attendance
+            Submit
           </button>
         </div>
       </form>
 
       {/* Attendance Table */}
+      <div className="max-w-3xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-6 space-y-4">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+          Attendance Records
+        </h3>
 
-      <div className="w-6/12 mx-auto shadow-xl border-2 border-gray-300   p-10 mt-8 space-y-4">
-
-        {attendances?.map((eachAttendance, index) => (
-          <div key={index} className="flex items-center justify-between shadow-sm border border-gray-200 bg-gray-50  py-1 pl-4">
-            <div className="flex items-center space-x-4">
-            <p>{index + 1}.</p>
-            <p>{eachAttendance.fullname}</p> 
-            <p>{eachAttendance.time}</p>
-            
-
+        {attendances && attendances.length > 0 ? (
+          attendances.map((eachAttendance, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md p-3"
+            >
+              <div className="flex items-center gap-6 text-gray-700">
+                <span className="font-semibold">{index + 1}.</span>
+                <span>{eachAttendance.fullname}</span>
+                <span className="text-sm text-gray-500">{eachAttendance.time}</span>
+              </div>
+              <button
+                onClick={() => deleteAttendance(eachAttendance._id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition"
+              >
+                Delete
+              </button>
             </div>
-
-            <p className="mr-2 "><button onClick={()=>deleteAttendance(eachAttendance._id)} className="text-white bg-red-500 px-2 py-1 text-sm font-medium cursor-pointer rounded-sm">Delete</button></p>
-
-          </div>
-          
-
-           
-        ))}
-
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No attendance records found.</p>
+        )}
       </div>
     </div>
   );
