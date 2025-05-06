@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AttendenceCard() {
   const [fullName, setFullName] = useState("");
   const [time, setTime] = useState("");
+  const [attendances, setAttendances] = useState(null);
 
   const createattendance = async (e) => {
     e.preventDefault();
@@ -18,7 +20,6 @@ export default function AttendenceCard() {
         }
       );
       toast.success("Attendance Created Successfully");
-
       setFullName("");
       setTime("");
       fetchAllAttendance();
@@ -27,8 +28,6 @@ export default function AttendenceCard() {
       toast.error("Failed to take Attendance");
     }
   };
-
-  const [attendances, setAttendances] = useState(null);
 
   const fetchAllAttendance = async () => {
     try {
@@ -41,10 +40,6 @@ export default function AttendenceCard() {
       toast.error("Unable to fetch all attendance");
     }
   };
-
-  useEffect(() => {
-    fetchAllAttendance();
-  }, []);
 
   const deleteAttendance = async (_id) => {
     try {
@@ -59,22 +54,24 @@ export default function AttendenceCard() {
     }
   };
 
+  useEffect(() => {
+    fetchAllAttendance();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100 py-20 px-4 mt-24">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-violet-100 py-16 px-4 mt-24">
       {/* Attendance Create Form */}
-      <form
+      <motion.form
         onSubmit={createattendance}
-        className="max-w-md mx-auto bg-white rounded-xl shadow-md p-8 space-y-6"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-lg mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6"
       >
-        <h2 className="text-2xl font-semibold text-center text-gray-700">
-          Create Attendance
-        </h2>
+        <h2 className="text-3xl font-bold text-center text-violet-700">Create Attendance</h2>
 
         <div>
-          <label
-            htmlFor="fullName"
-            className="block text-sm font-medium text-gray-600 mb-1"
-          >
+          <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-1">
             Full Name
           </label>
           <input
@@ -84,15 +81,12 @@ export default function AttendenceCard() {
             type="text"
             id="fullName"
             placeholder="Enter full name"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         </div>
 
         <div>
-          <label
-            htmlFor="time"
-            className="block text-sm font-medium text-gray-600 mb-1"
-          >
+          <label htmlFor="time" className="block text-sm font-semibold text-gray-700 mb-1">
             Entry Time
           </label>
           <input
@@ -102,49 +96,60 @@ export default function AttendenceCard() {
             type="text"
             id="time"
             placeholder="Enter entry time"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         </div>
 
-        <div className="text-right">
+        <div className="text-center">
           <button
             type="submit"
-            className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-md font-medium transition"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-semibold shadow transition duration-300"
           >
             Submit
           </button>
         </div>
-      </form>
+      </motion.form>
 
       {/* Attendance Table */}
-      <div className="max-w-3xl mx-auto mt-12 bg-white rounded-xl shadow-lg p-6 space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+        className="max-w-4xl mx-auto mt-14 bg-white rounded-2xl shadow-xl p-6"
+      >
+        <h3 className="text-2xl font-semibold text-violet-700 mb-6 border-b pb-2">
           Attendance Records
         </h3>
 
-        {attendances && attendances.length > 0 ? (
-          attendances.map((eachAttendance, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md p-3"
-            >
-              <div className="flex items-center gap-6 text-gray-700">
-                <span className="font-semibold">{index + 1}.</span>
-                <span>{eachAttendance.fullname}</span>
-                <span className="text-sm text-gray-500">{eachAttendance.time}</span>
-              </div>
-              <button
-                onClick={() => deleteAttendance(eachAttendance._id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition"
+        <AnimatePresence>
+          {attendances && attendances.length > 0 ? (
+            attendances.map((eachAttendance, index) => (
+              <motion.div
+                key={eachAttendance._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-3 shadow-sm"
               >
-                Delete
-              </button>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No attendance records found.</p>
-        )}
-      </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-700">
+                  <span className="font-semibold">{index + 1}.</span>
+                  <span className="text-lg">{eachAttendance.fullname}</span>
+                  <span className="text-sm text-gray-500">{eachAttendance.time}</span>
+                </div>
+                <button
+                  onClick={() => deleteAttendance(eachAttendance._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+                >
+                  Delete
+                </button>
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No attendance records found.</p>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
