@@ -11,7 +11,7 @@ const app = express();
 // 2.Middleware
 app.use(express.json());
 app.use(cors({
-     origin:["http://localhost:5173", "https://ams-six-rho.vercel.app/"],
+  origin:["http://localhost:5173", "https://ams-six-rho.vercel.app"],
 }));
 
 app.get("/", (req, res) => {
