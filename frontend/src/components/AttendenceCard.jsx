@@ -12,13 +12,10 @@ export default function AttendenceCard() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "https://ams-a80r.onrender.com/create-attendence",
-        {
-          fullname: fullName,
-          time: time,
-        }
-      );
+      await axios.post("https://ams-a80r.onrender.com/create-attendence", {
+        fullname: fullName,
+        time: time,
+      });
       toast.success("Attendance Created Successfully");
       setFullName("");
       setTime("");
@@ -68,10 +65,15 @@ export default function AttendenceCard() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="max-w-lg mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6"
       >
-        <h2 className="text-3xl font-bold text-center text-violet-700">Create Attendance</h2>
+        <h2 className="text-3xl font-bold text-center text-violet-700">
+          Create Attendance
+        </h2>
 
         <div>
-          <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-1">
+          <label
+            htmlFor="fullName"
+            className="block text-sm font-semibold text-gray-700 mb-1"
+          >
             Full Name
           </label>
           <input
@@ -86,7 +88,10 @@ export default function AttendenceCard() {
         </div>
 
         <div>
-          <label htmlFor="time" className="block text-sm font-semibold text-gray-700 mb-1">
+          <label
+            htmlFor="time"
+            className="block text-sm font-semibold text-gray-700 mb-1"
+          >
             Entry Time
           </label>
           <input
@@ -121,34 +126,50 @@ export default function AttendenceCard() {
           Attendance Records
         </h3>
 
-        <AnimatePresence>
-          {attendances && attendances.length > 0 ? (
-            attendances.map((eachAttendance, index) => (
-              <motion.div
-                key={eachAttendance._id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-3 shadow-sm"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-700">
-                  <span className="font-semibold">{index + 1}.</span>
-                  <span className="text-lg">{eachAttendance.fullname}</span>
-                  <span className="text-sm text-gray-500">{eachAttendance.time}</span>
-                </div>
-                <button
-                  onClick={() => deleteAttendance(eachAttendance._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+        {attendances && attendances.length > 0 ? (
+          <>
+            {/* Header Row */}
+            <div className="hidden sm:flex items-center justify-between px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg mb-4 font-semibold text-gray-600">
+              <div className="flex gap-4 w-full">
+                <span className="w-6">#</span>
+                <span className="flex-1">Full Name</span>
+                <span className="w-32 text-center">Time</span>
+                <span className="w-24 text-right">Action</span>
+              </div>
+            </div>
+
+            <AnimatePresence>
+              {attendances.map((eachAttendance, index) => (
+                <motion.div
+                  key={eachAttendance._id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 mb-3 shadow-sm"
                 >
-                  Delete
-                </button>
-              </motion.div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">No attendance records found.</p>
-          )}
-        </AnimatePresence>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-700 w-full">
+                    <span className="font-semibold w-6">{index + 1}.</span>
+                    <span className="flex-1 text-lg">{eachAttendance.fullname}</span>
+                    <span className="text-sm text-gray-500 w-32 text-center">
+                      {eachAttendance.time}
+                    </span>
+                    <div className="w-24 text-right">
+                      <button
+                        onClick={() => deleteAttendance(eachAttendance._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </>
+        ) : (
+          <p className="text-center text-gray-500">No attendance records found.</p>
+        )}
       </motion.div>
     </div>
   );
